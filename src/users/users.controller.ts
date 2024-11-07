@@ -10,15 +10,19 @@ import {
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { RegisterDto } from './dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginDto } from './dto/login.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
+import { AuthService } from './auth.service';
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Get('users')
   findAll() {
@@ -39,14 +43,14 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
-  @Post('auth/signup')
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
+  @Post('signup')
+  createUser(@Body() body: RegisterDto) {
+    return this.authService.signUp(body.email, body.password);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Post('auth/signin')
-  signin(@Body() loginUserDto: LoginUserDto) {
-    return this.usersService.signin(loginUserDto);
+  @Post('signin')
+  signin(@Body() body: LoginDto) {
+    return this.authService.signIn(body.email, body.password  );
   }
 }

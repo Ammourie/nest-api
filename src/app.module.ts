@@ -1,3 +1,4 @@
+import { AuthService } from './users/auth.service';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -11,10 +12,10 @@ import { User } from './users/entities/user.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: "127.0.0.1",
-      username: "postgres",
-      password: "asd123",
-      database: "nest",
+      host: '127.0.0.1',
+      username: 'postgres',
+      password: 'asd123',
+      database: 'nest',
       entities: [Blog, User],
       synchronize: true,
     }),
@@ -23,6 +24,6 @@ import { User } from './users/entities/user.entity';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [ AppService],
 })
-export class AppModule { }
+export class AppModule {}
