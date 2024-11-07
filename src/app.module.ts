@@ -10,8 +10,11 @@ import { User } from './users/entities/user.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
+      type: 'postgres',
+      host: "127.0.0.1",
+      username: "postgres",
+      password: "asd123",
+      database: "nest",
       entities: [Blog, User],
       synchronize: true,
     }),
