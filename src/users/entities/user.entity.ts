@@ -7,20 +7,22 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-
   @Column()
-  // @Unique(['email'])
   email: string;
 
   @Column()
-  @Exclude()
+  fullName: string;
+
+  @Column()
   password: string;
+  
+  @Column({ nullable: true })
+  access_token: string;
 
   @AfterInsert()
   logInsert() {

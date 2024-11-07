@@ -1,13 +1,8 @@
 import { Expose } from 'class-transformer';
 
-export class UserDto {
-  @Expose()
-  id: number;
-  @Expose()
-  email: string;
+export class AccessTokenDto {
   @Expose()
   fullName: string;
-
+  @Expose()
   access_token: string;
-  password: string;
 }
