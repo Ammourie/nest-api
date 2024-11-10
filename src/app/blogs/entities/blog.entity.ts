@@ -12,7 +12,7 @@ export class Blog {
   content: string;
 
   @Column()
-  author: string;
+  author_id: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

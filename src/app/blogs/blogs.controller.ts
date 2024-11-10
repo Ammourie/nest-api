@@ -1,34 +1,51 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Query,
+  Delete,
+  Headers,
+} from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-
-@Controller('blogs')
+import { ApiBearerAuth } from '@nestjs/swagger';
+@ApiBearerAuth()
+@Controller()
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
-
-  @Post()
-  create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogsService.create(createBlogDto);
+  @Get('blog')
+  findAll(@Headers() headers: any) {
+    const access_token = headers.authorization?.split(' ')[1];
+    return this.blogsService.findAll(access_token);
+  }
+  @Post('blogs/create')
+  create(@Body() createBlogDto: CreateBlogDto, @Headers() headers: any) {
+    const access_token = headers.authorization?.split(' ')[1];
+    return this.blogsService.create(createBlogDto, access_token);
   }
 
-  @Get()
-  findAll() {
-    return this.blogsService.findAll();
+  @Get('blogs/details')
+  findOne(@Query('id') id: string, @Headers() headers: any) {
+    const access_token = headers.authorization?.split(' ')[1];
+    return this.blogsService.findOne(+id, access_token);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.blogsService.findOne(+id);
+  @Patch('blogs/update')
+  update(
+    @Query('id') id: string,
+    @Body() updateBlogDto: UpdateBlogDto,
+    @Headers() headers: any,
+  ) {
+    const access_token = headers.authorization?.split(' ')[1];
+    return this.blogsService.update(+id, updateBlogDto, access_token);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogsService.update(+id, updateBlogDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blogsService.remove(+id);
+  @Delete('blogs/delete')
+  remove(@Query('id') id: string, @Headers() headers: any) {
+    const access_token = headers.authorization?.split(' ')[1];
+    return this.blogsService.remove(+id, access_token);
   }
 }

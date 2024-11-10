@@ -4,7 +4,7 @@ import {
   Post,
   Body,
   Patch,
-  Param,
+  Query,
   Delete,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -22,10 +22,13 @@ import { jwtConstants } from './constants';
 @ApiBearerAuth()
 @Controller()
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
+  @Serialize(UserDto)
+  @Get('user')
+  findOne(@Query('id') id: string) {
+    return this.usersService.findOne(+id);
+  }
   @Serialize(UserDto)
   @Get('users')
   findAll() {
@@ -40,20 +43,14 @@ export class UsersController {
   }
 
   @Serialize(UserDto)
-  @Get('users/:id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Serialize(UserDto)
-  @Patch('users/:id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Patch('users/update')
+  update(@Query('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Serialize(UserDto)
-  @Delete('users/:id')
-  remove(@Param('id') id: string) {
+  @Delete('users/delete')
+  remove(@Query('id') id: string) {
     return this.usersService.remove(+id);
   }
 }
