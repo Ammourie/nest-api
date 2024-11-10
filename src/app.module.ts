@@ -7,6 +7,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { UsersModule } from './users/users.module';
 import { Blog } from './blogs/entities/blog.entity';
 import { User } from './users/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -21,6 +22,7 @@ import { User } from './users/entities/user.entity';
     ConfigModule.forRoot({ isGlobal: true }),
     BlogsModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [ AppService],
