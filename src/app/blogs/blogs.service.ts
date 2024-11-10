@@ -1,4 +1,7 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Blog } from './entities/blog.entity';
@@ -27,14 +30,18 @@ export class BlogsService {
   async findAll(access_token: string) {
     const user = await this.usersService.findMe(access_token);
     if (!user) throw new NotFoundException('User not found');
-    return await this.repo.find({ where: { author_id: user.id } });
+    return await this.repo.find({
+      where: { author_id: user.id },
+      order: { created_at: 'DESC' },
+    });
   }
 
   async findOne(id: number, access_token: string) {
     const user = await this.usersService.findMe(access_token);
     if (!user) throw new NotFoundException('User not found');
     const blog = await this.repo.findOne({ where: { id, author_id: user.id } });
-    if (!blog) throw new ForbiddenException('You do not have access to this blog');
+    if (!blog)
+      throw new NotFoundException('Blog not found');
     return blog;
   }
 
@@ -42,7 +49,8 @@ export class BlogsService {
     const user = await this.usersService.findMe(access_token);
     if (!user) throw new NotFoundException('User not found');
     const blog = await this.repo.findOne({ where: { id, author_id: user.id } });
-    if (!blog) throw new ForbiddenException('You do not have access to update this blog');
+    if (!blog)
+      throw new NotFoundException('Blog not found');
     await this.repo.update(id, { ...updateBlogDto, author_id: user.id });
     return 'Blog updated successfully';
   }
@@ -51,7 +59,8 @@ export class BlogsService {
     const user = await this.usersService.findMe(access_token);
     if (!user) throw new NotFoundException('User not found');
     const blog = await this.repo.findOne({ where: { id, author_id: user.id } });
-    if (!blog) throw new ForbiddenException('You do not have access to delete this blog');
+    if (!blog)
+      throw new NotFoundException('Blog not found');
     await this.repo.delete(id);
     return 'Blog deleted successfully';
   }

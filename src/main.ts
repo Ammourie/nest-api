@@ -19,7 +19,7 @@ async function bootstrap() {
     })
     .build();
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(process.env.API_PREFIX ?? '');
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const documentFactory = () => SwaggerModule.createDocument(app, config);

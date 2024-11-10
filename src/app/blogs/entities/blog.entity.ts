@@ -1,5 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
+import { AfterUpdate } from 'typeorm';
 @Entity()
 export class Blog {
   @PrimaryGeneratedColumn()
@@ -14,6 +21,14 @@ export class Blog {
   @Column()
   author_id: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @AfterUpdate()
+  updateUpdatedAt() {
+    this.updated_at = new Date();
+  }
 }

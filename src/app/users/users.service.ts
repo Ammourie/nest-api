@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
 @Injectable()
 export class UsersService {
   constructor(
@@ -25,7 +24,7 @@ export class UsersService {
   }
   async findMe(token: string) {
     const decodedToken = this.jwtService.verify(token, {
-      secret: jwtConstants.secret,
+              secret: process.env.JWT_SECRET,
     });
     
     if (!decodedToken) {

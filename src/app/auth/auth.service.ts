@@ -12,7 +12,6 @@ import { randomBytes } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
-import { jwtConstants } from '../users/constants';
 import { promisify } from 'util';
 import { InjectRepository } from '@nestjs/typeorm';
 const scrypt = promisify(_scrypt);
@@ -36,10 +35,10 @@ export class AuthService {
     const res = salt + '.' + hash.toString('hex');
 
     const user = this.repo.create({ email, password: res, fullName });
-    const payload = { sub: user.id, username: user.fullName, };
+    const payload = { sub: user.id, username: user.fullName };
     user.access_token = await this.jwtService.signAsync(payload, {
-      secret: jwtConstants.secret,
-      expiresIn: jwtConstants.expire,
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_EXPIRES_IN,
     });
     this.repo.save(user);
 
@@ -72,8 +71,8 @@ export class AuthService {
 
       if (isTokenExpired) {
         token = await this.jwtService.signAsync(payload, {
-          secret: jwtConstants.secret,
-          expiresIn: jwtConstants.expire,
+          secret: process.env.JWT_SECRET,
+          expiresIn: process.env.JWT_EXPIRES_IN,
         });
         this.usersService.update(user.id, { access_token: token });
       }

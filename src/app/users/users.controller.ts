@@ -18,7 +18,6 @@ import { UserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
 @ApiBearerAuth()
 @Controller()
 export class UsersController {

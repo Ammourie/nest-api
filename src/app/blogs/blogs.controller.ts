@@ -16,7 +16,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 @Controller()
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
-  @Get('blog')
+  @Get('blogs')
   findAll(@Headers() headers: any) {
     const access_token = headers.authorization?.split(' ')[1];
     return this.blogsService.findAll(access_token);
