@@ -4,15 +4,15 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { scrypt as _scrypt } from 'crypto';
 import { randomBytes } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
-import { jwtConstants } from 'src/users/constants';
+import { jwtConstants } from '../users/constants';
 import { promisify } from 'util';
 import { InjectRepository } from '@nestjs/typeorm';
 const scrypt = promisify(_scrypt);

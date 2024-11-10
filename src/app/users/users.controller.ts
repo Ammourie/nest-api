@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Serialize } from '../interceptors/serialize.interceptor';
+import { Serialize } from '../../interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 @Controller()
 export class UsersController {
@@ -41,5 +41,4 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
-
 }
