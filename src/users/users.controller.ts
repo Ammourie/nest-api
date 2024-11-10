@@ -8,14 +8,12 @@ import {
   Delete,
   UseInterceptors,
   ClassSerializerInterceptor,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { RegisterDto } from '../auth/dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginDto } from '../auth/dto/login.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
-import { AccessTokenDto } from '../auth/dto/access_token_dto';
 @Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -43,4 +41,5 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
 }

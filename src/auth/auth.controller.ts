@@ -6,13 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AccessTokenDto } from './dto/access_token_dto';
-
+import { Public } from './public.decorator';
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
