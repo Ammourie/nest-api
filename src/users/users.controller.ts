@@ -15,14 +15,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
-import { AuthService } from './auth.service';
 import { AccessTokenDto } from './dto/access_token_dto';
-@Controller('auth')
+@Controller()
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Serialize(UserDto)
   @Get('users')
@@ -46,16 +42,5 @@ export class UsersController {
   @Delete('users/:id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
-  }
-  @Serialize(AccessTokenDto)
-  @Post('signup')
-  createUser(@Body() body: RegisterDto) {
-    return this.authService.signUp(body.email, body.password, body.fullName);
-  }
-
-  @Serialize(AccessTokenDto)
-  @Post('signin')
-  signin(@Body() body: LoginDto) {
-    return this.authService.signIn(body.email, body.password);
   }
 }
