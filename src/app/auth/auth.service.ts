@@ -36,7 +36,7 @@ export class AuthService {
     const res = salt + '.' + hash.toString('hex');
 
     const user = this.repo.create({ email, password: res, fullName });
-    const payload = { sub: user.id, username: user.fullName };
+    const payload = { sub: user.id, username: user.fullName, };
     user.access_token = await this.jwtService.signAsync(payload, {
       secret: jwtConstants.secret,
       expiresIn: jwtConstants.expire,
