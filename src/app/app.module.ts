@@ -23,9 +23,11 @@ import { SessionModule } from 'nestjs-session';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return {
-          type: 'sqlite',
-          database: 'database.sqlite',
-          
+          type: 'postgres',
+          host: configService.get<string>('DB_HOST'),
+          username: configService.get<string>('DB_USERNAME'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_DATABASE'),
           entities: [Blog, User],
           synchronize: process.env.NODE_ENV === 'development',
         };
