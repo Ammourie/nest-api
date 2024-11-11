@@ -1,3 +1,4 @@
+import { Blog } from 'src/app/blogs/entities/blog.entity';
 import {
   AfterRemove,
   AfterUpdate,
@@ -6,7 +7,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Unique,
+  OneToMany,
 } from 'typeorm';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -23,6 +26,8 @@ export class User {
   
   @Column({ nullable: true })
   access_token: string;
+  @OneToMany(() => Blog, (blog) => blog.user)
+  blogs: Blog[];
 
   @AfterInsert()
   logInsert() {

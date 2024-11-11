@@ -1,9 +1,11 @@
+import { User } from 'src/app/users/entities/user.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 
 import { AfterUpdate } from 'typeorm';
@@ -18,14 +20,15 @@ export class Blog {
   @Column()
   content: string;
 
-  @Column()
-  author_id: number;
 
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => User, (user) => user.blogs)
+  user: User;
 
   @AfterUpdate()
   updateUpdatedAt() {

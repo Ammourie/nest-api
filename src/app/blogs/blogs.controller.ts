@@ -13,6 +13,11 @@ import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
+import { serialize } from 'v8';
+import { BlogDto } from './dto/blog.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 @ApiBearerAuth()
 @Controller()
 export class BlogsController {
@@ -20,30 +25,29 @@ export class BlogsController {
   @Get('blogs')
   findAll(@Session() session: any) {
     return this.blogsService.findAll(session.user.id);
-    }
+  }
   @Post('blogs/create')
-  create(@Body() createBlogDto: CreateBlogDto, @Session() session: any) {
-    return this.blogsService.create(createBlogDto, session.user.id);
+  @Serialize(BlogDto)
+  create(@Body() createBlogDto: CreateBlogDto, @CurrentUser() user: User) {
+    return this.blogsService.create(createBlogDto, user);
   }
 
   @Get('blogs/details')
-  findOne(@Query('id') id: string, @Session() session: any) {
-    return this.blogsService.findOne(+id, session.user.id);
+  findOne(@Query('id') id: string, @CurrentUser() user: User) {
+    return this.blogsService.findOne(+id, user.id);
   }
 
   @Patch('blogs/update')
   update(
     @Query('id') id: string,
     @Body() updateBlogDto: UpdateBlogDto,
-    @Headers() headers: any,
+    @CurrentUser() user: User,
   ) {
-    const access_token = headers.authorization?.split(' ')[1];
-    return this.blogsService.update(+id, updateBlogDto, access_token);
+    return this.blogsService.update(+id, updateBlogDto, user.id);
   }
 
   @Delete('blogs/delete')
-  remove(@Query('id') id: string, @Headers() headers: any) {
-    const access_token = headers.authorization?.split(' ')[1];
-    return this.blogsService.remove(+id, access_token);
+  remove(@Query('id') id: string, @CurrentUser() user: User) {
+    return this.blogsService.remove(+id, user.id);
   }
 }
