@@ -1,35 +1,29 @@
 const path = require('path');
 const env = process.env.NODE_ENV || 'development';
 
-let config;
+let config = {
+  entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
+  synchronize: false,
+  migrations: ['migration/*.js'],
+  cli: {
+    migrationsDir: 'migration',
+  },
+};
 
 if (env === 'development') {
-  config = {
+  config = Object.assign(config, {
     type: 'sqlite',
     database: 'db.sqlite',
     entities: ['**/*.entity.js'],
-    synchronize: false,
-  };
-} else if (env === 'test') {
-  config = {
+  });
+} else if (env === 'test' || env === 'production') {
+  config = Object.assign(config, {
     type: 'postgres',
     host: process.env.DB_HOST,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-    synchronize: false,
-  };
-} else if (env === 'production') {
-  config = {
-    type: 'postgres',
-    host: process.env.DB_HOST,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-    synchronize: false,
-  };
+  });
 }
 
 module.exports = config;
