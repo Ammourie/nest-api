@@ -23,25 +23,30 @@ import { SessionModule } from 'nestjs-session';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return {
-          type: 'postgres',
-          host: configService.get<string>('DB_HOST'),
-          username: configService.get<string>('DB_USERNAME'),
-          password: configService.get<string>('DB_PASSWORD'),
-          database: configService.get<string>('DB_DATABASE'),
+          type: 'sqlite',
+          database: 'database.sqlite',
+          
           entities: [Blog, User],
           synchronize: process.env.NODE_ENV === 'development',
         };
       },
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: process.env.DB_HOST as string,
-    //   username: process.env.DB_USERNAME as string,
-    //   password: process.env.DB_PASSWORD as string,
-    //   database: process.env.DB_DATABASE as string,
-    //   entities: [Blog, User],
-    //   synchronize: process.env.APP_ENV === 'development',
+  
+    // TypeOrmModule.forRootAsync({
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => {
+    //     return {
+    //       type: 'postgres',
+    //       host: configService.get<string>('DB_HOST'),
+    //       username: configService.get<string>('DB_USERNAME'),
+    //       password: configService.get<string>('DB_PASSWORD'),
+    //       database: configService.get<string>('DB_DATABASE'),
+    //       entities: [Blog, User],
+    //       synchronize: process.env.NODE_ENV === 'development',
+    //     };
+    //   },
     // }),
+  
     BlogsModule,
     UsersModule,
     AuthModule,
