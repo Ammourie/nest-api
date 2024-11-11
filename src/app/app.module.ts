@@ -7,7 +7,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from 'nestjs-session';
-const settings = require('../../ormconfig.js');
+import AppDataSource from 'data-source';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ const settings = require('../../ormconfig.js');
       session: { secret: process.env.SESSION_SECRET },
     }),
 
-    TypeOrmModule.forRoot(settings),
+    TypeOrmModule.forRoot(AppDataSource.options),
     // TypeOrmModule.forRootAsync({
     //   inject: [ConfigService],
     //   useFactory: (configService: ConfigService) => {
