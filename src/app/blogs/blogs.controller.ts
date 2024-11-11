@@ -6,8 +6,9 @@ import {
   Patch,
   Query,
   Delete,
-  Headers,
+  Param,
   Session,
+  UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -18,6 +19,8 @@ import { User } from '../users/entities/user.entity';
 import { serialize } from 'v8';
 import { BlogDto } from './dto/blog.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { ApproveBlogDto } from './dto/approve-blog.dto';
+import { AdminGuard } from '../auth/guards/admin.guard';
 @ApiBearerAuth()
 @Controller()
 export class BlogsController {
@@ -49,5 +52,11 @@ export class BlogsController {
   @Delete('blogs/delete')
   remove(@Query('id') id: string, @CurrentUser() user: User) {
     return this.blogsService.remove(+id, user.id);
+  }
+
+  @Patch('admin/blog/approve/:id')
+  @UseGuards(AdminGuard)
+  approveBlog(@Param('id') id: string, @Body() body: ApproveBlogDto) {
+    return this.blogsService.approveBlog(+id, body.approved);
   }
 }

@@ -4,8 +4,6 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Blog } from './entities/blog.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
 
 @Injectable()
@@ -52,5 +50,14 @@ export class BlogsService {
     if (!blog) throw new NotFoundException('Blog not found');
     await this.repo.delete(id);
     return 'Blog deleted successfully';
+  }
+
+  async approveBlog(id: number, approved: boolean) {
+    const blog = await this.repo.findOne({
+      where: { id },
+    });
+    if (!blog) throw new NotFoundException('Blog not found');
+    blog.approved = approved;
+    return await this.repo.save(blog);
   }
 }

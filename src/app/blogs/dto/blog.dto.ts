@@ -5,7 +5,10 @@ export class BlogDto {
   @ApiProperty()
   @Expose()
   id: number;
-
+  @ApiProperty()
+  @Expose()
+  approved: boolean;
+  
   @ApiProperty()
   @Expose()
   title: string;
@@ -27,4 +30,3 @@ export class BlogDto {
   @Expose()
   updated_at: Date;
 }
-

@@ -23,7 +23,8 @@ export class User {
 
   @Column()
   password: string;
-  
+  @Column({ default: true })
+  isAdmin: boolean;
   @Column({ nullable: true })
   access_token: string;
   @OneToMany(() => Blog, (blog) => blog.user)

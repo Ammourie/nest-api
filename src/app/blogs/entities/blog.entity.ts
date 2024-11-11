@@ -13,13 +13,13 @@ import { AfterUpdate } from 'typeorm';
 export class Blog {
   @PrimaryGeneratedColumn()
   id: number;
-
+  @Column({ default: false })
+  approved: boolean;
   @Column()
   title: string;
 
   @Column()
   content: string;
-
 
   @CreateDateColumn()
   created_at: Date;
