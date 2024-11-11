@@ -1,23 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Query,
-  Delete,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  UseGuards,
-  Headers,
-} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Query, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from '../../interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { JwtService } from '@nestjs/jwt';
+import { CurrentUser } from './decorators/current-user.decorator';
 @ApiBearerAuth()
 @Controller()
 export class UsersController {
@@ -35,10 +23,8 @@ export class UsersController {
   }
   @Serialize(UserDto)
   @Get('profile')
-  me(@Headers() headers) {
-    const token = headers.authorization?.split(' ')[1];
-
-    return this.usersService.findMe(token);
+  me(@CurrentUser() user: User) {
+    return this.usersService.findMe(user.id);
   }
 
   @Serialize(UserDto)

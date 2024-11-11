@@ -32,7 +32,6 @@ export class AuthController {
   @Serialize(AccessTokenDto)
   @Post('login')
   async login(@Body() LoginDto: LoginDto, @Session() session: any) {
-    console.log(session.user);
     const user = await this.authService.signIn(LoginDto);
     session.user = user;
 
@@ -41,7 +40,6 @@ export class AuthController {
 
   @Post('signout')
   signout(@Session() session: any) {
-    console.log(session.user);
     session.user = null;
     return { message: 'Successfully signed out' };
   }

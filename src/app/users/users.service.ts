@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Session } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,17 +22,17 @@ export class UsersService {
     }
     return user;
   }
-  async findMe(token: string) {
-    const decodedToken = this.jwtService.verify(token, {
-              secret: process.env.JWT_SECRET,
-    });
-    
-    if (!decodedToken) {
-      throw new NotFoundException(`Invalid token`);
+  async findMe(id: number) {
+    // const decodedToken = this.jwtService.verify(token, {
+    //   secret: process.env.JWT_SECRET,
+    // });
+
+    if (!id) {
+      throw new NotFoundException(`User not found`);
     }
-    const user = await this.repo.findOne({ where: { access_token: token } });
+    const user = await this.repo.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException(`User with ID ${token} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
     return user;
   }

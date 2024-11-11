@@ -19,16 +19,16 @@ export class BlogsService {
     private usersService: UsersService,
   ) {}
 
-  async create(createBlogDto: CreateBlogDto, access_token: string) {
-    const user = await this.usersService.findMe(access_token);
+  async create(createBlogDto: CreateBlogDto, userId: number) {
+    const user = await this.usersService.findMe(userId);
     if (!user) throw new NotFoundException('User not found');
     const blog = this.repo.create({ ...createBlogDto, author_id: user.id });
 
     return this.repo.save(blog);
   }
 
-  async findAll(access_token: string) {
-    const user = await this.usersService.findMe(access_token);
+  async findAll(userId: number) {
+    const user = await this.usersService.findMe(userId);
     if (!user) throw new NotFoundException('User not found');
     return await this.repo.find({
       where: { author_id: user.id },
@@ -36,8 +36,8 @@ export class BlogsService {
     });
   }
 
-  async findOne(id: number, access_token: string) {
-    const user = await this.usersService.findMe(access_token);
+  async findOne(id: number, userId: number) {
+    const user = await this.usersService.findMe(userId);
     if (!user) throw new NotFoundException('User not found');
     const blog = await this.repo.findOne({ where: { id, author_id: user.id } });
     if (!blog)
@@ -45,8 +45,8 @@ export class BlogsService {
     return blog;
   }
 
-  async update(id: number, updateBlogDto: UpdateBlogDto, access_token: string) {
-    const user = await this.usersService.findMe(access_token);
+  async update(id: number, updateBlogDto: UpdateBlogDto, userId: number) {
+    const user = await this.usersService.findMe(userId);
     if (!user) throw new NotFoundException('User not found');
     const blog = await this.repo.findOne({ where: { id, author_id: user.id } });
     if (!blog)
@@ -55,8 +55,8 @@ export class BlogsService {
     return 'Blog updated successfully';
   }
 
-  async remove(id: number, access_token: string) {
-    const user = await this.usersService.findMe(access_token);
+  async remove(id: number, userId: number) {
+    const user = await this.usersService.findMe(userId);
     if (!user) throw new NotFoundException('User not found');
     const blog = await this.repo.findOne({ where: { id, author_id: user.id } });
     if (!blog)

@@ -7,6 +7,7 @@ import {
   Query,
   Delete,
   Headers,
+  Session,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -17,20 +18,17 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
   @Get('blogs')
-  findAll(@Headers() headers: any) {
-    const access_token = headers.authorization?.split(' ')[1];
-    return this.blogsService.findAll(access_token);
-  }
+  findAll(@Session() session: any) {
+    return this.blogsService.findAll(session.user.id);
+    }
   @Post('blogs/create')
-  create(@Body() createBlogDto: CreateBlogDto, @Headers() headers: any) {
-    const access_token = headers.authorization?.split(' ')[1];
-    return this.blogsService.create(createBlogDto, access_token);
+  create(@Body() createBlogDto: CreateBlogDto, @Session() session: any) {
+    return this.blogsService.create(createBlogDto, session.user.id);
   }
 
   @Get('blogs/details')
-  findOne(@Query('id') id: string, @Headers() headers: any) {
-    const access_token = headers.authorization?.split(' ')[1];
-    return this.blogsService.findOne(+id, access_token);
+  findOne(@Query('id') id: string, @Session() session: any) {
+    return this.blogsService.findOne(+id, session.user.id);
   }
 
   @Patch('blogs/update')

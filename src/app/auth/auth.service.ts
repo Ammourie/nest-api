@@ -67,7 +67,6 @@ export class AuthService {
         const tokenExpirationDateTime = new Date(decodedToken.exp * 1000);
         isTokenExpired = currentDateTime > tokenExpirationDateTime;
       }
-      console.log('isTokenExpire:', isTokenExpired);
 
       if (isTokenExpired) {
         token = await this.jwtService.signAsync(payload, {
