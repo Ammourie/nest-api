@@ -5,10 +5,9 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BlogsModule } from './blogs/blogs.module';
 import { UsersModule } from './users/users.module';
-import { Blog } from './blogs/entities/blog.entity';
-import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from 'nestjs-session';
+const settings = require('../../ormconfig.js');
 
 @Module({
   imports: [
@@ -19,21 +18,8 @@ import { SessionModule } from 'nestjs-session';
     SessionModule.forRoot({
       session: { secret: process.env.SESSION_SECRET },
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        return {
-          type: 'postgres',
-          host: configService.get<string>('DB_HOST'),
-          username: configService.get<string>('DB_USERNAME'),
-          password: configService.get<string>('DB_PASSWORD'),
-          database: configService.get<string>('DB_DATABASE'),
-          entities: [Blog, User],
-          synchronize: process.env.NODE_ENV === 'development',
-        };
-      },
-    }),
-  
+
+    TypeOrmModule.forRoot(settings),
     // TypeOrmModule.forRootAsync({
     //   inject: [ConfigService],
     //   useFactory: (configService: ConfigService) => {
@@ -48,7 +34,22 @@ import { SessionModule } from 'nestjs-session';
     //     };
     //   },
     // }),
-  
+
+    // TypeOrmModule.forRootAsync({
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => {
+    //     return {
+    //       type: 'postgres',
+    //       host: configService.get<string>('DB_HOST'),
+    //       username: configService.get<string>('DB_USERNAME'),
+    //       password: configService.get<string>('DB_PASSWORD'),
+    //       database: configService.get<string>('DB_DATABASE'),
+    //       entities: [Blog, User],
+    //       synchronize: process.env.NODE_ENV === 'development',
+    //     };
+    //   },
+    // }),
+
     BlogsModule,
     UsersModule,
     AuthModule,
