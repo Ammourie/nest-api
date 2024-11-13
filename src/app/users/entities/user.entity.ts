@@ -1,4 +1,4 @@
-import { Blog } from 'src/app/blogs/entities/blog.entity';
+import { Blog } from '../..//blogs/entities/blog.entity';
 import {
   AfterRemove,
   AfterUpdate,

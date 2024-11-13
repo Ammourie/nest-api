@@ -11,7 +11,7 @@ if (env === 'development') {
     database: 'db.sqlite',
     synchronize: false,
     entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-    migrations: [path.join(__dirname, 'migration', '*.js')],
+    migrations: ['migrations/*.{ts,js}'],
   };
 } else if (env === 'test' || env === 'production') {
   dataSourceOptions = {
@@ -22,7 +22,7 @@ if (env === 'development') {
     database: process.env.DB_DATABASE,
     entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
     synchronize: false,
-    migrations: [path.join(__dirname, 'migration', '*.js')],
+    migrations: ['migrations/*.{ts,js}'],
   };
 } else {
   throw new Error(`Unsupported environment: ${env}`);
