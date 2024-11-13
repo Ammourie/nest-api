@@ -10,11 +10,12 @@ import { CurrentUser } from './decorators/current-user.decorator';
 @Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
   @Serialize(UserDto)
-  @Get('user')
-  findOne(@Query('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get('profile')
+  me(@CurrentUser() user: User) {
+    console.log(user);
+
+    return this.usersService.findMe(user.id);
   }
   @Serialize(UserDto)
   @Get('users')
@@ -22,11 +23,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
   @Serialize(UserDto)
-  @Get('profile')
-  me(@CurrentUser() user: User) {
-    console.log(user);
-    
-    return this.usersService.findMe(user.id);
+  @Get('user/details')
+  findOne(@Query('id') id: string) {
+    return this.usersService.findOne(+id);
   }
 
   @Serialize(UserDto)
