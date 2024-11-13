@@ -1,9 +1,10 @@
-import { NestMiddleware } from '@nestjs/common';
+import { NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { UsersService } from '../users.service';
 import { User } from '../entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { CurrentUser } from '../decorators/current-user.decorator';
 declare global {
   namespace Express {
     interface Request {
@@ -25,7 +26,12 @@ export class CurrentUserMiddleware implements NestMiddleware {
         const decoded = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET,
         });
+
+
         req.currentUser = await this.userService.findOne(decoded.userId);
+        if (!req.currentUser) {
+          throw new UnauthorizedException();
+        }
       } catch (err) {
         console.error('Invalid token', err);
       }

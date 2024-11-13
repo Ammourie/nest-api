@@ -84,4 +84,8 @@ export class AuthService {
       throw error;
     }
   }
+  async signOut(id: number) {
+    await this.usersService.update(id, { access_token: null });
+    return { message: 'Successfully signed out' };
+  }
 }
