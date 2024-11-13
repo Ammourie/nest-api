@@ -13,16 +13,20 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from '..//interceptors/serialize.interceptor';
 import { AccessTokenDto } from './dto/access_token_dto';
 import { Public } from './public.decorator';
+import { JwtService } from '@nestjs/jwt';
 
 @Public()
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  @Serialize(AccessTokenDto)
+  
   @Post('signup')
   async signup(@Body() RegisterDto: RegisterDto, @Session() session: any) {
     const user = await this.authService.signUp(RegisterDto);
@@ -43,4 +47,6 @@ export class AuthController {
     session.user = null;
     return { message: 'Successfully signed out' };
   }
+
+
 }

@@ -35,20 +35,14 @@ export class AuthService {
     const res = salt + '.' + hash.toString('hex');
 
     const user = this.repo.create({ email, password: res, fullName });
-    const payload = { sub: user.id, username: user.fullName };
-    user.access_token = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_SECRET,
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
-    this.repo.save(user);
-
-    return user;
+    await this.repo.save(user);
+    return { success: true };
   }
 
   async signIn(LoginDto: LoginDto) {
     try {
       const { email, password } = LoginDto;
-      const user = await this.repo.findOne({
+      let user = await this.repo.findOne({
         where: { email },
       });
       if (!user) throw new NotFoundException('User not found');
@@ -58,14 +52,19 @@ export class AuthService {
 
       if (storedHash !== hash.toString('hex'))
         throw new BadRequestException('invalid credentials!');
-      const payload = { sub: user.id, username: user.fullName };
+      const payload = {
+        userId: user.id,
+        fullName: user.fullName,
+      };
       let token = user.access_token;
-      let isTokenExpired = false;
+      let isTokenExpired = true;
       if (token != null) {
         let decodedToken = this.jwtService.decode(token);
         const currentDateTime = new Date();
         const tokenExpirationDateTime = new Date(decodedToken.exp * 1000);
         isTokenExpired = currentDateTime > tokenExpirationDateTime;
+      } else {
+        isTokenExpired = true;
       }
 
       if (isTokenExpired) {
@@ -73,7 +72,9 @@ export class AuthService {
           secret: process.env.JWT_SECRET,
           expiresIn: process.env.JWT_EXPIRES_IN,
         });
-        this.usersService.update(user.id, { access_token: token });
+        user = await this.usersService.update(user.id, { access_token: token });
+
+        console.log(token);
       }
       return user;
     } catch (error) {

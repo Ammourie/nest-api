@@ -27,6 +27,8 @@ export class User {
   isAdmin: boolean;
   @Column({ nullable: true })
   access_token: string;
+  @Column({ nullable: true })
+  tmp: string;
   @OneToMany(() => Blog, (blog) => blog.user)
   blogs: Blog[];
 
