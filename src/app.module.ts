@@ -8,12 +8,12 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from 'nestjs-session';
 import AppDataSource from 'data-source';
-
+console.log(AppDataSource.options);
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: `.env`,
     }),
     SessionModule.forRoot({
       session: { secret: process.env.SESSION_SECRET },

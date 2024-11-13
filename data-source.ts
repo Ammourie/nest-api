@@ -1,11 +1,12 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 const path = require('path');
+const config = require('dotenv').config({ path: '.env' });
 
-const env = process.env.NODE_ENV || 'development';
+const mode = process.env.MODE;
 
 let dataSourceOptions: DataSourceOptions;
 
-if (env === 'development') {
+if (mode === 'development') {
   dataSourceOptions = {
     type: 'sqlite',
     database: 'db.sqlite',
@@ -13,7 +14,7 @@ if (env === 'development') {
     entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
     migrations: ['migrations/*.{ts,js}'],
   };
-} else if (env === 'test' || env === 'production') {
+} else if (mode === 'test' || mode === 'production') {
   dataSourceOptions = {
     type: 'postgres',
     host: process.env.DB_HOST,
@@ -25,7 +26,7 @@ if (env === 'development') {
     migrations: ['migrations/*.{ts,js}'],
   };
 } else {
-  throw new Error(`Unsupported environment: ${env}`);
+  throw new Error(`Unsupported environment: ${mode}`);
 }
 
 const AppDataSource = new DataSource(dataSourceOptions);
