@@ -17,11 +17,15 @@ if (mode === 'development') {
 } else if (mode === 'test' || mode === 'production') {
   dataSourceOptions = {
     type: 'postgres',
-    host: process.env.DB_HOST,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    host: process.env.POSTGRES_HOST,
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DATABASE,
+    ssl: true,  
     entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
+    extra: {
+      ssl: true,
+    },
     synchronize: false,
     migrations: ['migrations/*.{ts,js}'],
   };
