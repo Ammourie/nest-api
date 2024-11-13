@@ -8,7 +8,6 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from 'nestjs-session';
 import AppDataSource from 'data-source';
-console.log(AppDataSource.options);
 @Module({
   imports: [
     ConfigModule.forRoot({
