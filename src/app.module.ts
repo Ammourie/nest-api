@@ -33,9 +33,10 @@ if (mode === 'development') {
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DATABASE,
     entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-    // extra: {
-    //   ssl: true,
-    // },
+    ssl:true,
+    extra: {
+      ssl: true,
+    },
     synchronize: false,
     migrations: ['migrations/*.{ts,js}'],
   };
