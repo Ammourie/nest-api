@@ -20,13 +20,12 @@ export class CurrentUserMiddleware implements NestMiddleware {
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers['authorization']?.split(' ')[1];
-    console.log(token);
+
     if (token) {
       try {
         const decoded = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET,
         });
-
 
         req.currentUser = await this.userService.findOne(decoded.userId);
         if (!req.currentUser) {

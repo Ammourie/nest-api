@@ -37,13 +37,13 @@ export class BlogsController {
     if (id) return this.blogsService.findOne(+id, user.id);
     else return this.blogsService.findAll(user);
   }
-  @Post("create")
+  @Post('create')
   @Serialize(BlogDto)
   create(@Body() createBlogDto: CreateBlogDto, @CurrentUser() user: User) {
     return this.blogsService.create(createBlogDto, user);
   }
 
-  @Patch("update")
+  @Patch('update')
   update(
     @Query('id') id: string,
     @Body() updateBlogDto: UpdateBlogDto,
@@ -52,7 +52,7 @@ export class BlogsController {
     return this.blogsService.update(+id, updateBlogDto, user.id);
   }
 
-  @Delete("delete")
+  @Delete('delete')
   remove(@Query('id') id: string, @CurrentUser() user: User) {
     return this.blogsService.remove(+id, user.id);
   }
