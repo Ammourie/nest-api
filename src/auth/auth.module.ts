@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { AuthGuard } from './guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
-import { FirebaseModule } from 'src/firebase/firebase.module';
+import { FirebaseModule } from '../firebase/firebase.module';
 
 @Module({
   controllers: [AuthController],

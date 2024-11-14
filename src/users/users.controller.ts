@@ -13,7 +13,6 @@ export class UsersController {
   @Serialize(UserDto)
   @Get('profile')
   me(@CurrentUser() user: User) {
-    console.log(user);
 
     return this.usersService.findMe(user.id);
   }

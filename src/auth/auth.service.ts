@@ -15,11 +15,10 @@ import { User } from '../users/entities/user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import { promisify } from 'util';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FirebaseService } from 'src/firebase/firebase.service';
+import { FirebaseService } from '../firebase/firebase.service';
 const scrypt = promisify(_scrypt);
 @Injectable()
 export class AuthService {
-
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
@@ -28,7 +27,7 @@ export class AuthService {
     private firebaseService: FirebaseService,
   ) {}
 
-  async signUp(RegisterDto: RegisterDto) {
+  async signUp(RegisterDto: RegisterDto, isAdmin?: boolean) {
     const { email, password, fullName } = RegisterDto;
 
     let users = await this.usersService.findByEmail(RegisterDto.email);
@@ -38,7 +37,12 @@ export class AuthService {
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     const res = salt + '.' + hash.toString('hex');
 
-    const user = this.repo.create({ email, password: res, fullName });
+    const user = this.repo.create({
+      email,
+      password: res,
+      fullName,
+      isAdmin: isAdmin ? true : false,
+    });
 
     const storedUser = await this.repo.save(user);
 

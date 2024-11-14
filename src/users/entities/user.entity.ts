@@ -12,9 +12,11 @@ import {
 
 @Entity()
 export class User {
+  // Primary Key
   @PrimaryGeneratedColumn()
   id: number;
 
+  // User Information
   @Column()
   email: string;
 
@@ -23,15 +25,20 @@ export class User {
 
   @Column()
   password: string;
-  @Column({ default: true })
+
+  // User Roles and Permissions
+  @Column({ default: false })
   isAdmin: boolean;
+
+  // Optional Fields
   @Column({ nullable: true })
   access_token: string;
-  @Column({ nullable: true })
-  tmp: string;
+
+  // Relationships
   @OneToMany(() => Blog, (blog) => blog.user)
   blogs: Blog[];
 
+  // Lifecycle Hooks
   @AfterInsert()
   logInsert() {
     console.log('Inserted User with id', this.id);
@@ -41,6 +48,7 @@ export class User {
   logUpdate() {
     console.log('Updated User with id', this.id);
   }
+
   @AfterRemove()
   logRemove() {
     console.log('Removed User with id', this.id);

@@ -8,7 +8,7 @@ export class BlogDto {
   @ApiProperty()
   @Expose()
   approved: boolean;
-  
+
   @ApiProperty()
   @Expose()
   title: string;
@@ -19,7 +19,7 @@ export class BlogDto {
 
   @ApiProperty()
   @Expose()
-  @Transform(({ obj }) => obj.user.id)
+  @Transform(({ obj }) => obj.userId)
   userId: number;
 
   @ApiProperty()

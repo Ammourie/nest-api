@@ -20,30 +20,51 @@ import { BlogDto } from './dto/blog.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { ApproveBlogDto } from './dto/approve-blog.dto';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { BlogsFilterDto } from './dto/blogs-filter.dto';
 @ApiBearerAuth()
-@Controller('api/blogs')
-@Controller()
+@Controller('api')
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
 
-  @ApiQuery({
-    name: 'id',
-    type: String,
-    description: 'A parameter. Optional',
-    required: false,
-  })
-  @Get()
-  findAll(@CurrentUser() user: User, @Query('id') id?: string) {
-    if (id) return this.blogsService.findOne(+id, user.id);
-    else return this.blogsService.findAll(user);
+  @UseGuards(AdminGuard)
+  @Serialize(BlogDto)
+  @ApiQuery({ name: 'search', required: false, type: 'string' })
+  @ApiQuery({ name: 'approved', required: false, type: 'boolean' })
+  @ApiQuery({ name: 'author', required: false, type: 'number' })
+  @ApiQuery({ name: 'page', required: false, type: 'number', minimum: 0 })
+  @ApiQuery({ name: 'pageSize', required: false, type: 'number', minimum: 1 })
+  @ApiQuery({ name: 'blogId', required: false, type: 'number' })
+  @Get('admin/blogs')
+  findAllAdmin(@CurrentUser() user: User, @Query() filters: BlogsFilterDto) {
+    return this.blogsService.findAll(user, filters);
   }
-  @Post('create')
+
+  @Patch('admin/blog/approve/:id')
+  @UseGuards(AdminGuard)
+  approveBlog(@Param('id') id: string, @Body() body: ApproveBlogDto) {
+    return this.blogsService.approveBlog(+id, body.approved);
+  }
+
+  @ApiQuery({ name: 'search', required: false, type: 'string' })
+  @ApiQuery({ name: 'approved', required: false, type: 'boolean' })
+  @ApiQuery({ name: 'author', required: false, type: 'number' })
+  @ApiQuery({ name: 'page', required: false, type: 'number', minimum: 1})
+  @ApiQuery({ name: 'pageSize', required: false, type: 'number', minimum: 1 })
+  @ApiQuery({ name: 'blogId', required: false, type: 'number' })
+  @Get('blogs')
+  findAll(@CurrentUser() user: User, @Query() filters: BlogsFilterDto) {
+    if (filters.blogId)
+      return this.blogsService.findOne(+filters.blogId, user.id);
+    else return this.blogsService.findAll(user, filters);
+  }
+
+  @Post('blogs/create')
   @Serialize(BlogDto)
   create(@Body() createBlogDto: CreateBlogDto, @CurrentUser() user: User) {
     return this.blogsService.create(createBlogDto, user);
   }
 
-  @Patch('update')
+  @Patch('blogs/update')
   update(
     @Query('id') id: string,
     @Body() updateBlogDto: UpdateBlogDto,
@@ -52,14 +73,8 @@ export class BlogsController {
     return this.blogsService.update(+id, updateBlogDto, user.id);
   }
 
-  @Delete('delete')
+  @Delete('blogs/delete')
   remove(@Query('id') id: string, @CurrentUser() user: User) {
     return this.blogsService.remove(+id, user.id);
   }
-
-  // @Patch('admin/blog/approve/:id')
-  // @UseGuards(AdminGuard)
-  // approveBlog(@Param('id') id: string, @Body() body: ApproveBlogDto) {
-  //   return this.blogsService.approveBlog(+id, body.approved);
-  // }
 }

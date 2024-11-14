@@ -5,6 +5,7 @@ import { Blog } from './entities/blog.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import { BlogsFilterDto } from './dto/blogs-filter.dto';
 
 @Injectable()
 export class BlogsService {
@@ -19,11 +20,37 @@ export class BlogsService {
     return this.repo.save(blog);
   }
 
-  async findAll(user: User) {
-    return await this.repo.find({
-      where: { user },
-      order: { created_at: 'DESC' },
-    });
+  async findAll(user: User, filters: BlogsFilterDto) {
+    console.log(user, filters);
+
+    const filterOptions: any = {};
+    filterOptions.order = { created_at: 'DESC' };
+    if (filters.search) {
+      filterOptions.where = { ...filterOptions.where, title: filters.search };
+    }
+
+    if (filters.approved !== undefined) {
+      filterOptions.where = { ...filterOptions.where, approved: filters.approved };
+    }
+
+    if (filters.author) {
+      filterOptions.where = { ...filterOptions.where, user: { id: filters.author } };
+    }
+
+    if (filters.blogId) {
+      filterOptions.where = { ...filterOptions.where, id: filters.blogId };
+    }
+
+    if (filters.page && filters.pageSize) {
+      filterOptions.skip = (filters.page - 1) * filters.pageSize;
+      filterOptions.take = filters.pageSize;
+    }
+
+    if (user.isAdmin) {
+      filterOptions.user = { id: user.id };
+    }
+
+    return await this.repo.find(filterOptions);
   }
 
   async findOne(id: number, userId: number) {
