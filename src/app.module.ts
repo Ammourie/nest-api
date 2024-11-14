@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from 'nestjs-session';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { FirebaseModule } from './firebase/firebase.module';
 // import AppDataSource from 'data-source';
 
 const path = require('path');
@@ -17,32 +18,20 @@ const mode = process.env.MODE;
 
 let dataSourceOptions: DataSourceOptions;
 
-if (mode === 'development') {
-  dataSourceOptions = {
-    type: 'sqlite',
-    database: 'db.sqlite',
-    synchronize: false,
-    entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-    migrations: ['migrations/*.{ts,js}'],
-  };
-} else if (mode === 'test' || mode === 'production') {
-  dataSourceOptions = {
-    type: 'postgres',
-    host: process.env.POSTGRES_HOST,
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DATABASE,
-    entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-    ssl:true,
-    extra: {
-      ssl: true,
-    },
-    synchronize: false,
-    migrations: ['migrations/*.{ts,js}'],
-  };
-} else {
-  throw new Error(`Unsupported environment: ${mode}`);
-}
+dataSourceOptions = {
+  type: 'postgres',
+  host: process.env.POSTGRES_HOST,
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
+  entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
+  ssl: process.env.NODE_ENV === 'production' ? true : false,
+  extra: {
+    ssl: process.env.NODE_ENV === 'production' ? true : false,
+  },
+  synchronize: false,
+  migrations: ['migrations/*.{ts,js}'],
+};
 
 const AppDataSource = new DataSource(dataSourceOptions);
 
@@ -52,6 +41,7 @@ export default AppDataSource;
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      cache: true,
       envFilePath: `.env`,
     }),
     SessionModule.forRoot({
@@ -92,6 +82,7 @@ export default AppDataSource;
     BlogsModule,
     UsersModule,
     AuthModule,
+    FirebaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

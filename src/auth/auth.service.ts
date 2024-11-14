@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -14,14 +15,17 @@ import { User } from '../users/entities/user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import { promisify } from 'util';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FirebaseService } from 'src/firebase/firebase.service';
 const scrypt = promisify(_scrypt);
 @Injectable()
 export class AuthService {
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
     @InjectRepository(User)
     private repo: Repository<User>,
+    private firebaseService: FirebaseService,
   ) {}
 
   async signUp(RegisterDto: RegisterDto) {
@@ -35,7 +39,11 @@ export class AuthService {
     const res = salt + '.' + hash.toString('hex');
 
     const user = this.repo.create({ email, password: res, fullName });
-    await this.repo.save(user);
+
+    const storedUser = await this.repo.save(user);
+
+    // this.firebaseService.storeUser(storedUser);
+
     return { success: true };
   }
 

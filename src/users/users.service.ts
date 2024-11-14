@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException, Session } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Session } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { app } from 'firebase-admin';
+
 @Injectable()
 export class UsersService {
   constructor(

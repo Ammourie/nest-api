@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { AuthGuard } from './guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { FirebaseModule } from 'src/firebase/firebase.module';
 
 @Module({
   controllers: [AuthController],
@@ -18,6 +19,6 @@ import { APP_GUARD } from '@nestjs/core';
       useClass: AuthGuard,
     },
   ],
-  imports: [UsersModule, TypeOrmModule.forFeature([User])],
+  imports: [UsersModule, TypeOrmModule.forFeature([User]), FirebaseModule],
 })
 export class AuthModule {}
