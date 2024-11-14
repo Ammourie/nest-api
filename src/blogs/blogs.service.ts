@@ -21,20 +21,27 @@ export class BlogsService {
   }
 
   async findAll(user: User, filters: BlogsFilterDto) {
-    console.log(user, filters);
-
     const filterOptions: any = {};
     filterOptions.order = { created_at: 'DESC' };
+    if (!user.isAdmin) {
+      filterOptions.where = { user };
+    }
     if (filters.search) {
       filterOptions.where = { ...filterOptions.where, title: filters.search };
     }
 
     if (filters.approved !== undefined) {
-      filterOptions.where = { ...filterOptions.where, approved: filters.approved };
+      filterOptions.where = {
+        ...filterOptions.where,
+        approved: filters.approved,
+      };
     }
 
     if (filters.author) {
-      filterOptions.where = { ...filterOptions.where, user: { id: filters.author } };
+      filterOptions.where = {
+        ...filterOptions.where,
+        user: { id: filters.author },
+      };
     }
 
     if (filters.blogId) {
@@ -46,11 +53,11 @@ export class BlogsService {
       filterOptions.take = filters.pageSize;
     }
 
-    if (user.isAdmin) {
-      filterOptions.user = { id: user.id };
+    let x = await this.repo.find(filterOptions);
+    for (let index = 0; index < x.length; index++) {
+      x[index].user = user;
     }
-
-    return await this.repo.find(filterOptions);
+    return x;
   }
 
   async findOne(id: number, userId: number) {

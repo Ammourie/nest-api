@@ -30,6 +30,8 @@ export class Blog {
   @ManyToOne(() => User, (user) => user.blogs)
   user: User;
 
+  @Column()
+  userId: number;
   @AfterUpdate()
   updateUpdatedAt() {
     this.updated_at = new Date();

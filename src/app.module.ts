@@ -20,14 +20,14 @@ let dataSourceOptions: DataSourceOptions;
 
 dataSourceOptions = {
   type: 'postgres',
-  host: process.env.POSTGRES_HOST,
-  username: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DATABASE,
+  host: process.env.MODE === 'production' ? process.env.POSTGRES_HOST : process.env.DEV_POSTGRES_HOST,
+  username: process.env.MODE === 'production' ? process.env.POSTGRES_USER : process.env.DEV_POSTGRES_USER,
+  password: process.env.MODE === 'production' ? process.env.POSTGRES_PASSWORD : process.env.DEV_POSTGRES_PASSWORD,
+  database: process.env.MODE === 'production' ? process.env.POSTGRES_DATABASE : process.env.DEV_POSTGRES_DATABASE,
   entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-  ssl: process.env.NODE_ENV === 'production' ? true : false,
+  ssl: process.env.MODE === 'production' ? true : false,
   extra: {
-    ssl: process.env.NODE_ENV === 'production' ? true : false,
+    ssl: process.env.MODE === 'production' ? true : false,
   },
   synchronize: false,
   migrations: ['migrations/*.{ts,js}'],

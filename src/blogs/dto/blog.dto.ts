@@ -19,7 +19,7 @@ export class BlogDto {
 
   @ApiProperty()
   @Expose()
-  @Transform(({ obj }) => obj.userId)
+  @Transform(({ obj }) => obj.user.id)
   userId: number;
 
   @ApiProperty()
