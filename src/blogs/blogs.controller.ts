@@ -13,7 +13,7 @@ import {
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { BlogDto } from './dto/blog.dto';
@@ -21,25 +21,29 @@ import { Serialize } from '../interceptors/serialize.interceptor';
 import { ApproveBlogDto } from './dto/approve-blog.dto';
 import { AdminGuard } from '../auth/guards/admin.guard';
 @ApiBearerAuth()
+@Controller('api/blogs')
 @Controller()
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
-  @Get('blogs')
-  findAll(@CurrentUser() user: User) {
-    return this.blogsService.findAll(user);
+
+  @ApiQuery({
+    name: 'id',
+    type: String,
+    description: 'A parameter. Optional',
+    required: false,
+  })
+  @Get()
+  findAll(@CurrentUser() user: User, @Query('id') id?: string) {
+    if (id) return this.blogsService.findOne(+id, user.id);
+    else return this.blogsService.findAll(user);
   }
-  @Post('blogs/create')
+  @Post("create")
   @Serialize(BlogDto)
   create(@Body() createBlogDto: CreateBlogDto, @CurrentUser() user: User) {
     return this.blogsService.create(createBlogDto, user);
   }
 
-  @Get('blogs/details')
-  findOne(@Query('id') id: string, @CurrentUser() user: User) {
-    return this.blogsService.findOne(+id, user.id);
-  }
-
-  @Patch('blogs/update')
+  @Patch("update")
   update(
     @Query('id') id: string,
     @Body() updateBlogDto: UpdateBlogDto,
@@ -48,7 +52,7 @@ export class BlogsController {
     return this.blogsService.update(+id, updateBlogDto, user.id);
   }
 
-  @Delete('blogs/delete')
+  @Delete("delete")
   remove(@Query('id') id: string, @CurrentUser() user: User) {
     return this.blogsService.remove(+id, user.id);
   }
